@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# logs & caches
+*.log
+.vite/
+
+# OS / editor / tooling cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+.zcode/
+
+# QA artifacts (screenshots from automated visual passes)
+qa/
+
+# local tool config & misc
+.claude/
+*.tsbuildinfo
+.env*
+coverage/

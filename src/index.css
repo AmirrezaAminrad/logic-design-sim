@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+.dark {
+  --bg: #0a0f1c; --panel: #10192b; --panel2: #16213a; --border: #243049; --text: #e5ecf8;
+  --muted: #8a9bb8; --input: #1a2740; --accent: #38bdf8; --hover: rgba(148, 170, 210, 0.12);
+  color-scheme: dark;
+}
+.light {
+  --bg: #f4f6fb; --panel: #ffffff; --panel2: #f1f4fa; --border: #d6dcea; --text: #18233b;
+  --muted: #5b6a86; --input: #eef1f8; --accent: #0284c7; --hover: rgba(30, 60, 120, 0.08);
+  color-scheme: light;
+}
+
+html, body, #root { height: 100%; margin: 0; }
+@supports (height: 100dvh) { html, body, #root { height: 100dvh; } }
+body {
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--bg); overflow: hidden;
+  overscroll-behavior: none; -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex-shrink: 0;
+  padding: 6px 10px; min-height: 30px; border-radius: 7px; font-size: 12px; font-weight: 500; line-height: 1.2;
+  background: var(--input); color: var(--text); border: 1px solid var(--border);
+  cursor: pointer; white-space: nowrap; transition: filter .12s, background .12s;
+}
+.btn:hover:not(:disabled) { filter: brightness(1.25); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.primary { background: var(--accent); color: #04121c; border-color: transparent; font-weight: 600; }
+.btn.danger { color: #f87171; }
+.btn.active { background: var(--accent); color: #04121c; border-color: transparent; }
+.btn.run { background: #16a34a; color: #fff; border-color: transparent; }
+.btn.pause { background: #d97706; color: #fff; border-color: transparent; }
+/* icon-only toolbar buttons keep a fixed square footprint so nothing shifts when labels come and go */
+.btn.sq { width: 32px; min-height: 32px; padding: 0; }
+
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px;
+  background: var(--panel); color: var(--text); border: 1px solid var(--border); cursor: pointer;
+}
+.icon-btn:hover { background: var(--hover); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px; font-size: 11px;
+  background: var(--input); color: var(--text); border: 1px solid var(--border); cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); }
+
+.field {
+  width: 100%; padding: 6px 8px; border-radius: 7px; font-size: 12.5px; outline: none;
+  background: var(--input); color: var(--text); border: 1px solid var(--border);
+}
+.field:focus { border-color: var(--accent); }
+.label { font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+
+.palette-item { color: var(--text); }
+.palette-item:hover { background: var(--hover); }
+
+kbd { padding: 0 4px; border-radius: 4px; font-size: 10.5px; background: var(--input); border: 1px solid var(--border); color: var(--text); }
+
+.sep { width: 1px; align-self: stretch; margin: 4px 4px; background: var(--border); flex-shrink: 0; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+input[type="range"] { accent-color: var(--accent); }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ---- toolbar: fixed-height rows that never wrap; groups keep their width so controls stay put ---- */
+.tb-row { display: flex; align-items: center; gap: 6px; padding: 5px 10px; overflow-x: auto; white-space: nowrap; }
+.tb-row > * { flex-shrink: 0; }
+
+/* ---- side panels: docked on wide screens, slide-over drawers below 1024px ----
+   (components layer, so the lg:w-* width utilities used in App.tsx can size the docked panels) */
+@layer components {
+  .drawer {
+    position: fixed; top: 0; bottom: 0; z-index: 40; width: min(88vw, 21rem);
+    background: var(--panel); transition: transform .2s ease, visibility 0s linear .2s; visibility: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .drawer-left { left: 0; transform: translateX(-100%); border-right: 1px solid var(--border); }
+  .drawer-right { right: 0; transform: translateX(100%); border-left: 1px solid var(--border); }
+  .drawer.open { transform: none; visibility: visible; transition: transform .2s ease, visibility 0s; box-shadow: 0 0 40px rgba(0, 0, 0, .45); }
+  @media (min-width: 1024px) {
+    .drawer { position: static; z-index: auto; transform: none; visibility: visible; width: auto; transition: none; padding-bottom: 0; box-shadow: none !important; }
+  }
+}
+
+/* bigger hit areas for fingers */
+.pin-hit { r: 9px; }
+.wire-hit { stroke-width: 12px; }
+@media (pointer: coarse) {
+  .pin-hit { r: 13px; }
+  .wire-hit { stroke-width: 24px; }
+  .btn { min-height: 38px; padding: 8px 12px; font-size: 13px; }
+  .btn.sq { width: 38px; min-height: 38px; padding: 0; }
+  .icon-btn { width: 38px; height: 38px; }
+  .chip { padding: 7px 12px; font-size: 12px; }
+  .palette-item { padding-top: 9px; padding-bottom: 9px; }
+  .field { font-size: 16px; padding: 8px 10px; } /* 16px stops iOS from zooming into inputs */
+  input[type="range"] { height: 28px; }
+  .zoom-safe { font-size: 16px; }
+}
+
+.safe-b { padding-bottom: env(safe-area-inset-bottom); }
+.safe-t { padding-top: env(safe-area-inset-top); }
