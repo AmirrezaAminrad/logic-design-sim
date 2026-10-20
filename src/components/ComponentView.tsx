@@ -17,7 +17,9 @@ interface Props {
   ver: number;
 }
 
-const SEG: Record<string, [number, number, number, number]> = {
+const coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
+
+const SEG:Record<string, [number, number, number, number]> = {
   a: [10, 0, 36, 8], b: [46, 10, 8, 36], c: [46, 54, 8, 36], d: [10, 92, 36, 8], e: [2, 54, 8, 36], f: [2, 10, 8, 36], g: [10, 46, 36, 8],
 };
 
@@ -197,7 +199,7 @@ function ComponentViewImpl({ c, lay, th, selected, crit, defs, ver }: Props) {
             {name}
           </text>
         )}
-        <circle data-ui="1" data-pin="1" className="pin-hit" data-c={c.id} data-p={k} data-k={kind} cx={x} cy={y} r={9} fill="transparent" style={{ cursor: 'crosshair' }}>
+        <circle data-ui="1" data-pin="1" className="pin-hit" data-c={c.id} data-p={k} data-k={kind} cx={x} cy={y} r={coarse ? 14 : 9} fill="transparent" style={{ cursor: 'crosshair' }}>
           <title>{`${name || (kind === 'in' ? 'in' : 'out')} · ${w} bit${w > 1 ? 's' : ''} · value ${w > 1 ? '0x' + hex(v, w) : v}`}</title>
         </circle>
       </g>

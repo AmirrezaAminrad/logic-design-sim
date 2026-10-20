@@ -98,7 +98,17 @@ export default function Canvas() {
   }, []);
 
   const pinAt = (e: { clientX: number; clientY: number }) => {
-    const el = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-pin]') as SVGElement | null;
+    let el = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-pin]') as SVGElement | null;
+    if (!el && wiring) {
+      // fingers are fat and hide the pin: snap to the nearest compatible pin within ~28px
+      let best = 28;
+      document.querySelectorAll<SVGElement>('[data-pin]').forEach((p) => {
+        if (p.dataset.k === wiring.k || p.dataset.c === wiring.c) return;
+        const r = p.getBoundingClientRect();
+        const dd = Math.hypot(r.left + r.width / 2 - e.clientX, r.top + r.height / 2 - e.clientY);
+        if (dd < best) { best = dd; el = p; }
+      });
+    }
     if (!el) return null;
     return { c: el.dataset.c!, p: +el.dataset.p!, k: el.dataset.k as 'in' | 'out' };
   };

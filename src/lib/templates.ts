@@ -4,7 +4,7 @@ import { newComp, pinsOf } from './defs';
 import { packageSelection } from './ic';
 import { assemble, EXAMPLE_PROGRAM, EVALUATOR_PROGRAM } from './assembler';
 
-class B {
+export class B {
   comps: Comp[] = [];
   wires: Wire[] = [];
   defs: Record<string, ICDef> = {};
@@ -461,7 +461,7 @@ function tRipple(): Circuit {
   return b.circuit();
 }
 
-export interface Template { id: string; name: string; desc: string; tag: string; build: () => Circuit }
+export interface Template { id: string; name: string; desc: string; tag: string; folder?: string; build: () => Circuit }
 export const TEMPLATES: Template[] = [
   { id: 'ha', name: 'Half Adder', tag: 'Combinational', desc: 'XOR gives the sum bit, AND gives the carry. Click the switches and watch the wires.', build: tHalfAdder },
   { id: 'fa', name: 'Full Adder', tag: 'Combinational', desc: 'Two half-adder ICs plus an OR gate — a hierarchy built with the "Package IC" feature.', build: tFullAdder },

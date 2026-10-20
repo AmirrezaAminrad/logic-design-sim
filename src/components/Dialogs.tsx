@@ -2,6 +2,8 @@ import { useMemo, useRef, useState } from 'react';
 import { X, Download, Upload, Save, Trash2, FileImage, FileCode2, Cpu, Package, Copy, Play, Sigma } from 'lucide-react';
 import { useStore, simReset } from '../lib/store';
 import { TEMPLATES } from '../lib/templates';
+import type { Template } from '../lib/templates';
+import { ARCH_TEMPLATES } from '../lib/arch-examples';
 import { truthTable } from '../lib/engine';
 import { minimize, formatSOP, kmap as buildKmap } from '../lib/boolean';
 import { TYPES, hex } from '../lib/defs';
@@ -80,21 +82,24 @@ function FilesDialog({ onClose }: { onClose: () => void }) {
 }
 
 function TemplatesDialog({ onClose }: { onClose: () => void }) {
+  const card = (t: Template) => (
+    <button key={t.id} className="text-left p-3 rounded-lg transition hover:brightness-125" style={{ background: 'var(--input)', border: '1px solid var(--border)' }}
+      onClick={() => { useStore.getState().loadCircuit(t.build(), t.name); onClose(); }}>
+      <div className="flex items-center justify-between mb-1">
+        <b className="text-sm">{t.name}</b>
+        <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent)', color: '#04121c' }}>{t.tag}</span>
+      </div>
+      <div className="text-xs leading-snug" style={{ color: 'var(--muted)' }}>{t.desc}</div>
+    </button>
+  );
   return (
     <Modal title="Example circuits" onClose={onClose} wide>
       <p className="text-xs mb-3" style={{ color: 'var(--muted)' }}>Loading an example replaces the current canvas (you can undo with Ctrl+Z). Examples build on each other: half adder → full adder → 4-bit adder → ALU → register file → CPU.</p>
-      <div className="grid sm:grid-cols-2 gap-3">
-        {TEMPLATES.map((t) => (
-          <button key={t.id} className="text-left p-3 rounded-lg transition hover:brightness-125" style={{ background: 'var(--input)', border: '1px solid var(--border)' }}
-            onClick={() => { useStore.getState().loadCircuit(t.build(), t.name); onClose(); }}>
-            <div className="flex items-center justify-between mb-1">
-              <b className="text-sm">{t.name}</b>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent)', color: '#04121c' }}>{t.tag}</span>
-            </div>
-            <div className="text-xs leading-snug" style={{ color: 'var(--muted)' }}>{t.desc}</div>
-          </button>
-        ))}
-      </div>
+      <div className="grid sm:grid-cols-2 gap-3">{TEMPLATES.map(card)}</div>
+      <details className="mt-4">
+        <summary className="cursor-pointer text-sm font-semibold mb-2">Computer Architecture slides ({ARCH_TEMPLATES.length} circuits)</summary>
+        <div className="grid sm:grid-cols-2 gap-3">{ARCH_TEMPLATES.map(card)}</div>
+      </details>
     </Modal>
   );
 }
